@@ -7,8 +7,10 @@ import com.example.brokage.application.controllers.responses.AuthenticationRespo
 import com.example.brokage.application.controllers.responses.RegisterUserResponse;
 import com.example.brokage.domain.usecases.user.LoginUserUseCase;
 import com.example.brokage.domain.usecases.user.RegisterUserUseCase;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +26,15 @@ public class AuthenticationController {
     private final UserRequestsMapper userRequestsMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+    @Operation(summary = "Login user", description = "Logs in user and gets JWT token")
+    public ResponseEntity<AuthenticationResponse> login(@Validated @RequestBody AuthenticationRequest request) {
         String jwtToken = loginUserUseCase.execute(request.username(), request.password());
         return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody RegisterUserRequest request) {
+    @Operation(summary = "Registers new user", description = "Registers new user. user types CUSTOMER / ADMIN")
+    public ResponseEntity<RegisterUserResponse> registerUser(@Validated @RequestBody RegisterUserRequest request) {
         var dto = registerUserUseCase.execute(request.username(), request.password(), request.userType());
         return ResponseEntity.ok(userRequestsMapper.userDtoToRegisterUserResponse(dto));
     }

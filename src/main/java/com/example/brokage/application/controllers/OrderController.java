@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create Order", description = "Creates new SELL/BUY order")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
-    public void createOrder(@RequestBody CreateOrderRequest request,
+    public void createOrder(@Validated @RequestBody CreateOrderRequest request,
                             @Parameter(description = "Customer Id", required = true)
                             @PathVariable long customerId) {
         var orderDto = orderRequestsMapper.createOrderRequestToOrderDto(request, customerId);
@@ -44,14 +45,18 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
-    public GetCustomerOrdersResponse getCustomerOrders(@PathVariable long customerId) {
+    @Operation(summary = "List Customer Orders", description = "Lists all customer orders")
+    public GetCustomerOrdersResponse getCustomerOrders(
+            @Parameter(description = "Customer Id", required = true) @PathVariable long customerId) {
         var orders = getCustomerOrdersUseCase.execute(customerId);
         return orderRequestsMapper.orderDtoListToGetCustomerOrderResponse(orders);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
-    public void cancelOrder(@PathVariable Long id) {
+    @Operation(summary = "Cancel Order", description = "Cancels pending order")
+    public void cancelOrder(
+            @Parameter(description = "Order Id", required = true) @PathVariable Long id) {
         cancelOrderUseCase.execute(id);
     }
 }

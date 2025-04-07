@@ -3,6 +3,7 @@ package com.example.brokage.application.controllers;
 import com.example.brokage.application.controllers.mappers.AssetRequestsMapper;
 import com.example.brokage.application.controllers.responses.GetCustomerAssetsResponse;
 import com.example.brokage.domain.usecases.assets.GetCustomerAssetsUseCase;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class AssetController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
+    @Operation(summary = "Get Customer Assets ", description = "Get Customer Assets")
     public GetCustomerAssetsResponse getCustomerAssets(@PathVariable long customerId) {
         var assets = getCustomerAssetsUseCase.execute(customerId);
         return assetRequestsMapper.assetDtoListToGetCustomerAssetsResponse(assets);
