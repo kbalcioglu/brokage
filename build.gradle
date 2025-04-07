@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.brokerage'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+}
+
+test {
+    useJUnitPlatform()  // Tells Gradle to use JUnit 5
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Nimbus JOSE JWT (more robust JWT implementation)
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
+
+    // Swagger Dependencies (using springdoc-openapi)
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+
+    // Lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // H2 Database for testing
+    implementation 'com.h2database:h2'
+
+    // MapStruct dependencies
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'   // MapStruct core
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'  // MapStruct annotation processor
+
+    // Spring Boot Test dependencies
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "com.vaadin.external.google", module: "android-json"
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
+}
+
+
